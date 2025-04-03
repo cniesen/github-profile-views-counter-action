@@ -40230,7 +40230,7 @@ let yearGraph = (function () {
         let countData = [];
         if(year.status){
             for(const view of year.views){
-                labels.push('"' + (view.timestamp.getFullYear() + 1) + '/' + view.timestamp.getMonth() + '"');
+                labels.push('"' + view.timestamp.getFullYear() + '/' + (view.timestamp.getMonth() + 1) + '"');
                 uniqueData.push(view.uniques);
                 countData.push(view.count);
             }
@@ -40492,7 +40492,6 @@ let markdownTemplate = function () {
     let summaryPage = async function (fileName, actionName, actionUrl, authorName, authorUrl, response, insightsRepository) {
         let lastUpdate = getDate();
         let tableComponent = await createSummaryPageTableComponent(fileName, response, insightsRepository);
-        console.log(">> ", response);
         let repositoryUrl = `https://github.com/${response[0].ownerLogin}/${insightsRepository}`;
         let svgBadge = `[![Image of ${repositoryUrl}](${repositoryUrl}/blob/master/svg/profile/badge.svg)](${repositoryUrl})`;
         let markdown =  `## [🚀 ${actionName}](${actionUrl})\n`;
