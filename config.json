@@ -3,6 +3,7 @@
   "advancedMode": "true",
   "language": "en-US",
   "repository": [
-    "morsetrainer"
+    "morsetrainer",
+    "cqqrz/cqqrz.github.io"
   ]
 }

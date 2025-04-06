@@ -1,5 +1,6 @@
 const core = require('@actions/core');
 const HeaderModel = require('../../model/input/HeaderModel');
+const InsightsRepositoryModel = require('../../model/config/InsightsRepositoryModel');
 const RequestModel = require('../../model/input/RequestModel');
 const jsonFile = require('../../helper/file/json-file');
 let input = (function () {
@@ -25,8 +26,7 @@ let input = (function () {
                 `advancedMode='${configJson.data.advancedMode}' language='${configJson.data.language}' repository='${configJson.data.repository.toString()}'`)
             return new RequestModel(
                 true,
-                USERNAME,
-                REPOSITORY,
+                new InsightsRepositoryModel(USERNAME, REPOSITORY),
                 configJson.data.devMode,
                 configJson.data.advancedMode,
                 configJson.data.language,

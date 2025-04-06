@@ -5,12 +5,12 @@ const requestViewsOctokit = require('../octokit/request-views');
 const RequestModel = require('../../model/octokit/RequestModel');
 let requestOctokit = (function () {
     let verifyCommits = async function (header, request) {
-        let verify =  await verifyCommitsOctokit.verify(header, request.username, request.insightsRepository);
+        let verify =  await verifyCommitsOctokit.verify(header, request.insightsRepository.owner, request.insightsRepository.repository);
         if(verify){
-            core.info(`Insight repository '${request.username}/${request.insightsRepository}/cache' verified`);
+            core.info(`Insight repository '${request.insightsRepository.owner}/${request.insightsRepository.repository}/cache' verified`);
         } else {
-            core.info(`Not verified. Found unauthorized commits in '${request.username}/${request.insightsRepository}/cache'. ` +
-            `Revoke previous unauthorized commits from '${request.username}/${request.insightsRepository}/cache'`);
+            core.info(`Not verified. Found unauthorized commits in '${request.insightsRepository.owner}/${request.insightsRepository.repository}/cache'. ` +
+            `Revoke previous unauthorized commits from '${request.insightsRepository.owner}/${request.insightsRepository.repository}/cache'`);
         }
         return verify;
     }
@@ -27,25 +27,32 @@ let requestOctokit = (function () {
         return views;
     }
     let requestInsightRepository = async function (header, request) {
-        let requestModel = new RequestModel('', request.username, request.insightsRepository)
+        let requestModel = new RequestModel('', request.insightsRepository.owner, request.insightsRepository.repository)
         let insightsRepository =  await requestRepositoryOctokit.request(header, requestModel);
         if(insightsRepository.status){
-            core.info(`Insight repository '${request.username}/${request.insightsRepository}' available`);
+            core.info(`Insight repository '${request.insightsRepository.owner}/${request.insightsRepository.repository}' available`);
         } else {
-            core.info(`Insight repository not available '${request.username}/${request.insightsRepository}'. `+
-                `This property may not exist for this URL '${request.username}/${request.insightsRepository}', may not be retrievable ` +
-                `${insightsRepository.response}`);
+            core.info(`Insight repository not available '${request.insightsRepository.owner}/${request.insightsRepository.repository}'. `+
+                `This property may not exist for this URL '${request.insightsRepository.owner}/${request.insightsRepository.repository}', ` + 
+                `may not be retrievable ${insightsRepository.response}`);
         }
         return insightsRepository;
     }
     let requestRepository = async function (header, request, repositoryName) {
-        let requestModel = new RequestModel('', request.username, repositoryName);
+        let requestModel;
+        let x = repositoryName.split("/");
+        if (x.length == 2) {
+            requestModel = new RequestModel('', x[0], x[1]);
+        } else {
+            requestModel = new RequestModel('', request.insightsRepository.owner, repositoryName);
+        }
+
         let repository = await requestRepositoryOctokit.request(header, requestModel);
         if(repository.status){
-            core.info(`Repository '${request.username}/${repositoryName}' available`);
+            core.info(`Repository '${requestModel.username}/${requestModel.repository}' available`);
         } else {
-            core.info(`Repository not available '${request.username}/${repositoryName}'. `+
-                `This property may not exist for this URL '${request.username}/${repositoryName}', may not be retrievable ` +
+            core.info(`Repository not available '${requestModel.username}/${requestModel.repository}'. `+
+                `This property may not exist for this URL '${requestModel.username}/${requestModel.repository}', may not be retrievable ` +
                 `${repository.response}`);
         }
         return repository;

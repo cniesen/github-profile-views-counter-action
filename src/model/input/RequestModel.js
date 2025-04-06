@@ -1,6 +1,5 @@
-let RequestModel = function (status, username, insightsRepository, devMode, advancedMode, language, repository) {
+let RequestModel = function (status, insightsRepository, devMode, advancedMode, language, repository) {
     this.status = status;
-    if (this.status) this.username = username;
     if (this.status) this.insightsRepository = insightsRepository;
     if (this.status) this.devMode = devMode;
     if (this.status) this.advancedMode = advancedMode;
